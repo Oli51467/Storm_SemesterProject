@@ -4,31 +4,39 @@ import org.apache.storm.task.OutputCollector;
 import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
+import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
+import org.apache.storm.tuple.Values;
 
 import java.util.Map;
 
-public class TestOfPrint extends BaseRichBolt {
+public class TrimSuffix extends BaseRichBolt {
 
     OutputCollector collector;
-    double longti,lati;
+    String city;
 
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
-        this.collector=outputCollector;
+        this.collector = outputCollector;
     }
 
     @Override
     public void execute(Tuple tuple) {
-        longti = tuple.getDoubleByField("longitude");
-        lati = tuple.getDoubleByField("latitude");
+        city = tuple.getStringByField("city");
+        if(check(city)){
+            city = city.substring(0,city.length()-1);
+        }
+        collector.emit(new Values(city));
+    }
 
-        //System.out.println("转化后的经度为:   "+longti);
-        //System.out.println("转化后的纬度为:   "+lati);
+    boolean check(String str){
+        char c = str.charAt(str.length()-1);
+        if(c == '市' || c == '区' || c == '州' || c == '县' ) return true;
+        else return false;
     }
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-
+        outputFieldsDeclarer.declare(new Fields("trimcity"));
     }
 }
