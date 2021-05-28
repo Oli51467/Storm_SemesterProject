@@ -18,8 +18,8 @@ public class TestOfPrint extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        String res=tuple.getStringByField("ipconf");
-        System.out.println(res+"\n");
+        String res=tuple.getStringByField("city");
+        System.out.println("ip地址转化后为  "+res+"\n");
     }
 
     @Override
