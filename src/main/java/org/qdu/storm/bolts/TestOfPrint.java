@@ -11,6 +11,8 @@ import java.util.Map;
 public class TestOfPrint extends BaseRichBolt {
 
     OutputCollector collector;
+    double longti,lati;
+
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.collector=outputCollector;
@@ -18,8 +20,11 @@ public class TestOfPrint extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        String res=tuple.getStringByField("city");
-        System.out.println("ip地址转化后为  "+res+"\n");
+        longti = tuple.getDoubleByField("longitude");
+        lati = tuple.getDoubleByField("latitude");
+
+        System.out.println("转化后的经度为:   "+longti);
+        System.out.println("转化后的纬度为:   "+lati);
     }
 
     @Override

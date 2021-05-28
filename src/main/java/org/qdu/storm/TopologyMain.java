@@ -3,10 +3,7 @@ package org.qdu.storm;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.topology.TopologyBuilder;
-import org.qdu.storm.bolts.AddrToCityBolt;
-import org.qdu.storm.bolts.Split;
-import org.qdu.storm.bolts.TestOfPrint;
-import org.qdu.storm.bolts.ipToLong;
+import org.qdu.storm.bolts.*;
 import org.qdu.storm.spouts.LinesReader;
 
 public class TopologyMain {
@@ -26,10 +23,13 @@ public class TopologyMain {
 
         builder.setBolt("iptolong",new ipToLong()).shuffleGrouping("split");
 
-        builder.setBolt("addrtocity",new AddrToCityBolt()).shuffleGrouping("iptolong");
+        builder.setBolt("addrtocity",new AddrToCity()).shuffleGrouping("iptolong");
 
+        //builder.setBolt("trim",new TrimSuffix()).shuffleGrouping("addrtocity");
+
+        builder.setBolt("getxy",new CityToCoordinate()).shuffleGrouping("addrtocity");
         //打印测试
-        builder.setBolt("print",new TestOfPrint()).shuffleGrouping("addrtocity");
+        builder.setBolt("print",new TestOfPrint()).shuffleGrouping("getxy");
 
         //Config
         Config config = new Config();

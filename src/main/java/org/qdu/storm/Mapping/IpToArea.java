@@ -34,17 +34,19 @@ public class IpToArea {
                 Maxip = Long.parseLong(fields[5]);
                 Pair<Long,Long> r = new Pair<>(Minip,Maxip);
 
-                //if (Minip==3528671232L&&Maxip==3528703999L) System.out.println("is"+fields[1]+"is"+fields[2]+"is");
-                if(fields[1].contains("市")) {
+                if(check(fields[2])) continue;
+                else {
+                    region.put(r,fields[2]);
+                }
+                /*if(fields[1].contains("市")) {
                     region.put(r,fields[1]);
                     idx++;
                     continue;
-                }
-                if(check(fields[2])) continue;
-                else region.put(r,fields[2]);
+                }*/
                 idx++;
             }
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             throw new RuntimeException("Error reading tuple", e);
         }
     }

@@ -31,14 +31,14 @@ public class LinesReader extends BaseRichSpout {
 
     @Override
     public void nextTuple() {
-        if(completed){
+        /*if(completed){
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             return;
-        }
+        }*/
         String line;
         //Open the reader
         BufferedReader reader = new BufferedReader(fileReader);
