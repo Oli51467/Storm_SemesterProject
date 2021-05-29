@@ -23,8 +23,7 @@ public class TestOfPrint extends BaseRichBolt {
         longti = tuple.getDoubleByField("longitude");
         lati = tuple.getDoubleByField("latitude");
 
-        //System.out.println("转化后的经度为:   "+longti);
-        //System.out.println("转化后的纬度为:   "+lati);
+        System.out.println("转化后的经玮度为:   "+longti+" "+lati);
     }
 
     @Override
