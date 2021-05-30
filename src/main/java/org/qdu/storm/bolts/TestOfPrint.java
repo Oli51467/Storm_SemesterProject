@@ -12,6 +12,7 @@ public class TestOfPrint extends BaseRichBolt {
 
     OutputCollector collector;
     double longti,lati;
+    String res;
 
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
@@ -20,10 +21,9 @@ public class TestOfPrint extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        longti = tuple.getDoubleByField("longitude");
-        lati = tuple.getDoubleByField("latitude");
+        res = tuple.getStringByField("flag");
 
-        System.out.println("转化后的经玮度为:   "+longti+" "+lati);
+        System.out.println("是否成功插入数据库:   "+res);
     }
 
     @Override

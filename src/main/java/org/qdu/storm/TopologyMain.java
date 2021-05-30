@@ -3,7 +3,9 @@ package org.qdu.storm;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.topology.TopologyBuilder;
+import org.apache.storm.trident.state.StateType;
 import org.qdu.storm.bolts.*;
+import org.qdu.storm.jdbcUtils.JDBCStateConfig;
 import org.qdu.storm.spouts.LinesReader;
 
 public class TopologyMain {
@@ -14,6 +16,17 @@ public class TopologyMain {
             System.err.println("setup a name first");
             return;
         }
+
+        //State持久化配置属性
+        //保存数据库链接用到的信息，驱动，连接字符串，用户名，密码
+        JDBCStateConfig jdbconfig = new JDBCStateConfig();
+
+        //容错性
+        jdbconfig.setType(StateType.TRANSACTIONAL);
+
+        //tuple存储
+        //jdbconfig.setCols("**");
+        //jdbconfig.setColVals("***");
 
         TopologyBuilder builder = new TopologyBuilder();
         //设置topo
@@ -28,8 +41,10 @@ public class TopologyMain {
         //builder.setBolt("trim",new TrimSuffix()).shuffleGrouping("addrtocity");
 
         builder.setBolt("getxy",new CityToCoordinate()).shuffleGrouping("addrtocity");
+
+        builder.setBolt("database",new jdbcConnector()).shuffleGrouping("getxy");
         //打印测试
-        builder.setBolt("print",new TestOfPrint()).shuffleGrouping("getxy");
+        builder.setBolt("print",new TestOfPrint()).shuffleGrouping("database");
 
         //Config
         Config config = new Config();
