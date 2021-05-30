@@ -10,6 +10,9 @@ import org.apache.storm.tuple.Values;
 
 import java.util.Map;
 
+/*
+    将一个IP地址通过转化算法转化成一个Long型整数
+ */
 public class ipToLong extends BaseRichBolt {
 
     OutputCollector collector;
@@ -30,6 +33,7 @@ public class ipToLong extends BaseRichBolt {
         collector.emit(new Values(ipaddr));
     }
 
+    //转化算法
     public static long iptolong(String strIp){
         long[] ip = new long[4];
 

@@ -4,8 +4,14 @@ import javafx.util.Pair;
 import java.io.*;
 import java.util.*;
 
+/*
+    从文件中读取，将IP与地区的映射存入哈希表中
+    以提高bolts中信息转化的速度
+    其中，IP是最小IP和最大IP的范围
+ */
 public class IpToArea {
 
+    //hash
     public HashMap<Pair<Long,Long>,String> region = new HashMap<>();
     public int idx=0;
 
@@ -38,11 +44,7 @@ public class IpToArea {
                 else {
                     region.put(r,fields[2]);
                 }
-                /*if(fields[1].contains("市")) {
-                    region.put(r,fields[1]);
-                    idx++;
-                    continue;
-                }*/
+
                 idx++;
             }
         }
@@ -51,11 +53,13 @@ public class IpToArea {
         }
     }
 
+    //如果地区的最小范围字段不包含如下四个后缀，则说明这个字段无效
     public boolean check(String fields){
         if(!fields.contains("市") && !fields.contains("区") && !fields.contains("州") && !fields.contains("县")) return true;
         else return false;
     }
 
+    //测试
     /*public static void main(String[] args) {
         IpToArea a = new IpToArea();
         for (Map.Entry<Pair<Long, Long>, String> entry : a.region.entrySet()) {

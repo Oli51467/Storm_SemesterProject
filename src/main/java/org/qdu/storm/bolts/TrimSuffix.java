@@ -10,6 +10,9 @@ import org.apache.storm.tuple.Values;
 
 import java.util.Map;
 
+/*
+    将一个城市所带的后缀去除
+ */
 public class TrimSuffix extends BaseRichBolt {
 
     OutputCollector collector;
@@ -23,9 +26,11 @@ public class TrimSuffix extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         city = tuple.getStringByField("city");
+        //如果有特定后缀，就去掉
         if(check(city)){
             city = city.substring(0,city.length()-1);
         }
+        //否则什么也不做
         collector.emit(new Values(city));
     }
 

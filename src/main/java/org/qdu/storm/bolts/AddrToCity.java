@@ -17,7 +17,10 @@ import java.io.FileReader;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
-//9位或10位的ipaddr转化成地区
+/*
+    将从上一个bolt接收的ip地址转化成地区
+    通过实例化Toarea获取哈希表
+ */
 public class AddrToCity extends BaseRichBolt {
 
     OutputCollector collector;
@@ -28,6 +31,7 @@ public class AddrToCity extends BaseRichBolt {
     @Override
     public void prepare(Map<String, Object> conf, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.collector = outputCollector;
+        //初始化hash表
         ToArea = new IpToArea();
     }
 
@@ -35,9 +39,15 @@ public class AddrToCity extends BaseRichBolt {
     public void execute(Tuple tuple) {
         addr = tuple.getLongByField("ipaddr");
 
+        //查表
         city = Get(addr);
+        //如果可以查到相关映射，就发射到下一个bolt中
         if(city != ""){
             collector.emit(new Values(city));
+        }
+        //否则产生错误报表
+        else{
+
         }
     }
 
@@ -46,7 +56,6 @@ public class AddrToCity extends BaseRichBolt {
             if(ar >= entry.getKey().getKey() && ar <= entry.getKey().getValue()){
                 return entry.getValue();
             }
-            //System.out.println("Key = " + entry.getKey().getKey() + ", Value = " + entry.getValue());
         }
         return "";
     }

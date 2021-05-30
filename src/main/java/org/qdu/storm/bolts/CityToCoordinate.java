@@ -12,6 +12,9 @@ import org.qdu.storm.Mapping.AreaToCoordinate;
 
 import java.util.Map;
 
+/*
+    将从上一个bolt接收到的城市通过查表获取到它的坐标
+ */
 public class CityToCoordinate extends BaseRichBolt {
 
     OutputCollector collector;
@@ -22,6 +25,7 @@ public class CityToCoordinate extends BaseRichBolt {
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.collector = outputCollector;
+        //初始化hash表
         atc = new AreaToCoordinate();
     }
 
@@ -45,6 +49,7 @@ public class CityToCoordinate extends BaseRichBolt {
                 return p;
             }
         }
+        //如果没有该城市的坐标，则返回一个默认容器
         p = new Pair<>(0.0,0.0);
         return p;
     }

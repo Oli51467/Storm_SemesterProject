@@ -8,6 +8,9 @@ import org.apache.storm.tuple.Tuple;
 
 import java.util.Map;
 
+/*
+    打印测试类
+ */
 public class TestOfPrint extends BaseRichBolt {
 
     OutputCollector collector;

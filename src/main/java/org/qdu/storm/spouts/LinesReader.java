@@ -12,6 +12,10 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Map;
 
+/*
+    从用户手机日志文件中读取每一行
+    将其作为数据源发射到bolts中去
+ */
 public class LinesReader extends BaseRichSpout {
 
     private SpoutOutputCollector collector;
@@ -20,6 +24,8 @@ public class LinesReader extends BaseRichSpout {
 
     @Override
     public void open(Map<String, Object> conf, TopologyContext context, SpoutOutputCollector spoutOutputCollector) {
+
+        //初始化文件reader，文件的配置信息放在config的字段中
         try {
             this.fileReader = new FileReader(conf.get("logfile").toString());
         } catch (FileNotFoundException e) {
@@ -31,21 +37,25 @@ public class LinesReader extends BaseRichSpout {
 
     @Override
     public void nextTuple() {
-        /*if(completed){
+
+        //为提高CPU的效率，如果一次发射成功，则sleep一秒
+        if(completed){
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
+            finally {
+                completed = false;
+            }
             return;
-        }*/
+        }
         String line;
         //Open the reader
         BufferedReader reader = new BufferedReader(fileReader);
         try{
             //读取每一行
             while((line = reader.readLine()) != null){
-                //this.collector.emit(new Values(line),line);
                 this.collector.emit(new Values(line));
             }
         }catch(Exception e){
@@ -69,7 +79,4 @@ public class LinesReader extends BaseRichSpout {
         System.out.println("FAIL:" + msgId);
     }
 
-    @Override
-    public void close() {
-    }
 }

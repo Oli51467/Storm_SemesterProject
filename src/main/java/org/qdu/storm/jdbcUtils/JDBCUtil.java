@@ -4,6 +4,10 @@ import java.sql.*;
 import java.util.HashMap;
 import java.util.Map;
 
+/*
+    连接数据库
+    封装了插入数据和获取数据的两个方法
+ */
 public class JDBCUtil {
 
     private String driver;
@@ -61,7 +65,8 @@ public class JDBCUtil {
             rs = ps.executeQuery();
             if(rs.next()){
                 Bean iteBean=new Bean(rs.getDouble("longitude"), rs.getDouble("latitude"));
-                //*****要改result.put(rs.getString("tel"), iteBean);
+                //*****要改
+                // result.put(rs.getString("tel"), iteBean);
             }
         } catch (SQLException e) {
             e.printStackTrace();

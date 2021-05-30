@@ -10,6 +10,9 @@ import org.apache.storm.tuple.Values;
 
 import java.util.Map;
 
+/*
+    将句子切分
+ */
 public class Split extends BaseRichBolt {
 
     OutputCollector collector;
@@ -23,7 +26,6 @@ public class Split extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        //lines= tuple.getString(0);
         lines = tuple.getStringByField("line");
         fields = lines.split("\t");
         ipconf = fields[3].trim();

@@ -2,6 +2,9 @@ package org.qdu.storm.jdbcUtils;
 
 import org.apache.storm.trident.state.StateType;
 
+/*
+    连接JDBC配置信息
+ */
 public class JDBCStateConfig {
 
     private String url;
