@@ -20,19 +20,25 @@ public class TopologyMain {
         TopologyBuilder builder = new TopologyBuilder();
 
         //设置topo
+        //数据源
         builder.setSpout("sourcedata",new LinesReader());
-
+        //切分
         builder.setBolt("split",new Split()).shuffleGrouping("sourcedata");
-
+        //转化ip到long
         builder.setBolt("iptolong",new ipToLong()).shuffleGrouping("split");
-
+        //ip转城市
         builder.setBolt("addrtocity",new AddrToCity()).shuffleGrouping("iptolong");
 
         //builder.setBolt("trim",new TrimSuffix()).shuffleGrouping("addrtocity");
 
+        //城市转坐标
         builder.setBolt("getxy",new CityToCoordinate()).shuffleGrouping("addrtocity");
 
-        builder.setBolt("database",new jdbcConnector()).shuffleGrouping("getxy");
+        //坐标估值
+        builder.setBolt("eva",new eval()).shuffleGrouping("getxy");
+
+        //坐标持久化
+        builder.setBolt("database",new jdbcConnector()).shuffleGrouping("eva");
         //打印测试
         builder.setBolt("print",new TestOfPrint()).shuffleGrouping("database");
 

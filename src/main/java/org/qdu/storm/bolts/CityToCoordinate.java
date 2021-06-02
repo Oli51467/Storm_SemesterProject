@@ -36,7 +36,7 @@ public class CityToCoordinate extends BaseRichBolt {
 
         //发射两个值，一个值是经度，一个值是纬度
         if(res.getKey() != 0.0 && res.getValue() != 0.0){
-            this.collector.emit(new Values(res.getKey(),res.getValue()));
+            this.collector.emit(new Values(res.getKey(),res.getValue(),city));
         }
     }
 
@@ -57,6 +57,6 @@ public class CityToCoordinate extends BaseRichBolt {
     //将字段放到fields中
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("longitude","latitude"));
+        outputFieldsDeclarer.declare(new Fields("longitude","latitude","CITY"));
     }
 }

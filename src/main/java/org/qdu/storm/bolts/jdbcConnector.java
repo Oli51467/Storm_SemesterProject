@@ -25,6 +25,11 @@ public class jdbcConnector extends BaseRichBolt {
     JDBCUtil jdbcUtil;
     String tablename;
 
+    //定义插入到数据库中的相关字段的值，name默认为地区
+    int value =10;
+    String name1 = "地区";
+    String city1;
+
 
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
@@ -36,13 +41,16 @@ public class jdbcConnector extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        longti = tuple.getDoubleByField("longitude");
-        lati = tuple.getDoubleByField("latitude");
+        //取字段
+        longti = tuple.getDoubleByField("lng");
+        lati = tuple.getDoubleByField("lat");
+        city1 = tuple.getStringByField("CITY");
+        value = tuple.getIntegerByField("value");
 
         //获取要持久化的表名
         tablename = jdbconfig.getTable();
         //prepare一条sql语句
-        String sql = "insert into " + tablename +" (longitude,latitude) values(" +longti+","+lati+");";
+        String sql = "insert into " + tablename +" (name,city,value,lng,lat) values('"+name1+"','"+city1+"',"+value+","+longti+","+lati+");";
         //插入到数据库中
         jdbcUtil.insert(sql);
         collector.emit(new Values("success"));
