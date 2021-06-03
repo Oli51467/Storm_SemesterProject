@@ -32,11 +32,11 @@ public class jdbcConnector extends BaseRichBolt {
 
 
     @Override
-    public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
+    public void prepare(Map<String, Object> conf, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.collector = outputCollector;
 
         //初始化数据库连接配置信息
-        setting();
+        setting(conf);
     }
 
     @Override
@@ -56,16 +56,16 @@ public class jdbcConnector extends BaseRichBolt {
         collector.emit(new Values("success"));
     }
 
-    void setting(){
+    void setting(Map<String,Object> conf){
         jdbconfig = new JDBCStateConfig();
         //容错性
         jdbconfig.setType(StateType.TRANSACTIONAL);
         //设置mysql相关配置信息
-        jdbconfig.setDriver("com.mysql.jdbc.Driver");
-        jdbconfig.setTable("Location");
-        jdbconfig.setUrl("jdbc:mysql://hadoop-master:3306/stormproject");
-        jdbconfig.setUsername("stormproject");
-        jdbconfig.setPassword("storm");
+        jdbconfig.setDriver(conf.get("driver").toString());
+        jdbconfig.setTable(conf.get("table").toString());
+        jdbconfig.setUrl(conf.get("url").toString());
+        jdbconfig.setUsername(conf.get("username").toString());
+        jdbconfig.setPassword(conf.get("password").toString());
         //将设置好的配置信息传入到JDBCUtil中
         jdbcUtil = new JDBCUtil(jdbconfig.getDriver(),
                 jdbconfig.getUrl(),

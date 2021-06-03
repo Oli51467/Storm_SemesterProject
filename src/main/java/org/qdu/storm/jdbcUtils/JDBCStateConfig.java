@@ -105,5 +105,4 @@ public class JDBCStateConfig {
                 + ", colVals=" + colVals + ", cacheSize=" + cacheSize + ", type=" + type + "]";
     }
 
-
 }

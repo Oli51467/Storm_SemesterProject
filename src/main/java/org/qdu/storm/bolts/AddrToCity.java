@@ -19,7 +19,7 @@ import java.util.Map;
 
 /*
     将从上一个bolt接收的ip地址转化成地区
-    通过实例化Toarea获取哈希表
+    通过Toarea获取哈希表
  */
 public class AddrToCity extends BaseRichBolt {
 
@@ -41,11 +41,10 @@ public class AddrToCity extends BaseRichBolt {
 
         //查表
         city = Get(addr);
-        //如果可以查到相关映射，就发射到下一个bolt中
+        //如果有映射，就发射到下一个bolt中
         if(city != ""){
             collector.emit(new Values(city));
         }
-        //否则产生错误报表
         else{
 
         }

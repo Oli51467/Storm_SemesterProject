@@ -32,6 +32,7 @@ public class Split extends BaseRichBolt {
         collector.emit(new Values(ipconf));
     }
 
+
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
         outputFieldsDeclarer.declare(new Fields("ipconf"));

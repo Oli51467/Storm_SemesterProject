@@ -32,7 +32,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>5.1.47</version>
         </dependency>
-        <!-- jimu-->
+        <!-- thrift-->
+        <dependency>
+            <groupId>org.apache.thrift</groupId>
+            <artifactId>libthrift</artifactId>
+            <version>0.9.3</version>
+        </dependency>
     </dependencies>
 
     <packaging>jar</packaging>
