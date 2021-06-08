@@ -22,6 +22,9 @@ public class CityToCoordinate extends BaseRichBolt {
     AreaToCoordinate atc;
     Pair<Double,Double> res;
 
+    public  final static  String Stream_ID_1="Stream_1";
+    public  final static  String Stream_ID_2="Stream_2";
+
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.collector = outputCollector;
@@ -36,7 +39,12 @@ public class CityToCoordinate extends BaseRichBolt {
 
         //发射两个值，一个值是经度，一个值是纬度
         if(res.getKey() != 0.0 && res.getValue() != 0.0){
-            this.collector.emit(new Values(res.getKey(),res.getValue(),city));
+            this.collector.emit(Stream_ID_1,tuple,new Values(res.getKey(),res.getValue(),city));
+            this.collector.ack(tuple);
+        }
+        else{
+            this.collector.emit(Stream_ID_2,tuple,new Values(city));
+            this.collector.ack(tuple);
         }
     }
 
@@ -57,6 +65,7 @@ public class CityToCoordinate extends BaseRichBolt {
     //将字段放到fields中
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("longitude","latitude","CITY"));
+        outputFieldsDeclarer.declareStream(Stream_ID_1,new Fields("longitude","latitude","CITY"));
+        outputFieldsDeclarer.declareStream(Stream_ID_2,new Fields("unbind"));
     }
 }

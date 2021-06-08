@@ -5,55 +5,32 @@ import org.apache.storm.task.TopologyContext;
 import org.apache.storm.topology.OutputFieldsDeclarer;
 import org.apache.storm.topology.base.BaseRichBolt;
 import org.apache.storm.trident.state.StateType;
-import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
-import org.apache.storm.tuple.Values;
 import org.qdu.storm.jdbcUtils.JDBCStateConfig;
 import org.qdu.storm.jdbcUtils.JDBCUtil;
-import java.util.Map;
 
+import java.util.Map;
 /*
-    连接数据库bolts，将接收到的经纬度坐标
-    持久化到数据库中
+将无法映射成坐标的城市保存到数据库中
  */
-public class jdbcConnector extends BaseRichBolt {
+public class GetInvalidCity extends BaseRichBolt {
 
     OutputCollector collector;
-    double longti;
-    double lati;
     JDBCStateConfig jdbconfig;
     JDBCUtil jdbcUtil;
-    String tablename;
-
-    //定义插入到数据库中的相关字段的值，name默认为地区
-    int value =10;
-    String name1 = "地区";
-    String city1;
-
+    private String tablename="InvalidCity";
 
     @Override
-    public void prepare(Map<String, Object> conf, TopologyContext topologyContext, OutputCollector outputCollector) {
+    public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
         this.collector = outputCollector;
-
-        //初始化数据库连接配置信息
-        setting(conf);
+        setting(map);
     }
 
     @Override
     public void execute(Tuple tuple) {
-        //取字段
-        longti = tuple.getDoubleByField("lng");
-        lati = tuple.getDoubleByField("lat");
-        city1 = tuple.getStringByField("CITY");
-        value = tuple.getIntegerByField("value");
-
-        //获取要持久化的表名
-        tablename = jdbconfig.getTable();
-        //prepare一条sql语句
-        String sql = "insert into " + tablename +" (name,city,value,lng,lat) values('"+name1+"','"+city1+"',"+value+","+longti+","+lati+");";
-        //插入到数据库中
+        String unbindc = tuple.getStringByField("unbind");
+        String sql = "insert into " + tablename +" (city) values('"+unbindc+"');";
         jdbcUtil.insert(sql);
-        collector.emit(tuple,new Values("success"));
         collector.ack(tuple);
     }
 
@@ -77,6 +54,6 @@ public class jdbcConnector extends BaseRichBolt {
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {
-        outputFieldsDeclarer.declare(new Fields("flag"));
+
     }
 }

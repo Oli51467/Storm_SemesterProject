@@ -31,7 +31,8 @@ public class TrimSuffix extends BaseRichBolt {
             city = city.substring(0,city.length()-1);
         }
         //否则什么也不做
-        collector.emit(new Values(city));
+        collector.emit(tuple,new Values(city));
+        collector.ack(tuple);
     }
 
     boolean check(String str){

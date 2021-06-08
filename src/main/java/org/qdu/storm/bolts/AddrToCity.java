@@ -43,11 +43,10 @@ public class AddrToCity extends BaseRichBolt {
         city = Get(addr);
         //如果有映射，就发射到下一个bolt中
         if(city != ""){
-            collector.emit(new Values(city));
+            collector.emit(tuple,new Values(city));
+            collector.ack(tuple);
         }
-        else{
 
-        }
     }
 
     String Get(Long ar){

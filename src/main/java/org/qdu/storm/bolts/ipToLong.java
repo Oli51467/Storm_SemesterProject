@@ -30,7 +30,8 @@ public class ipToLong extends BaseRichBolt {
 
         ipaddr = iptolong(rec);
 
-        collector.emit(new Values(ipaddr));
+        collector.emit(tuple,new Values(ipaddr));
+        collector.ack(tuple);
     }
 
     //转化算法

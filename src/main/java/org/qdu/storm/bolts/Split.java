@@ -29,7 +29,8 @@ public class Split extends BaseRichBolt {
         lines = tuple.getStringByField("line");
         fields = lines.split("\t");
         ipconf = fields[3].trim();
-        collector.emit(new Values(ipconf));
+        collector.emit(tuple,new Values(ipconf));
+        collector.ack(tuple);
     }
 
 

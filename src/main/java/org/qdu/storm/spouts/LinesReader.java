@@ -11,6 +11,8 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Map;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /*
     从用户手机日志文件中读取每一行
@@ -21,6 +23,9 @@ public class LinesReader extends BaseRichSpout {
     private SpoutOutputCollector collector;
     private FileReader fileReader;
     private boolean completed = false;
+
+    private AtomicInteger counter;
+    int msgID;
 
     @Override
     public void open(Map<String, Object> conf, TopologyContext context, SpoutOutputCollector spoutOutputCollector) {
@@ -33,12 +38,15 @@ public class LinesReader extends BaseRichSpout {
         }
         //初始化发射器
         this.collector=spoutOutputCollector;
+        //初始化
+        counter = new AtomicInteger();
+
     }
 
     @Override
     public void nextTuple() {
 
-        //为提高CPU的效率，如果一次发射成功，则sleep一秒
+        //如果一次发射成功，则sleep一秒
         if(completed){
             try {
                 Thread.sleep(1000);
@@ -56,7 +64,8 @@ public class LinesReader extends BaseRichSpout {
         try{
             //读取每一行
             while((line = reader.readLine()) != null){
-                this.collector.emit(new Values(line));
+                msgID = this.counter.getAndIncrement();
+                this.collector.emit(new Values(line),msgID);
             }
         }catch(Exception e){
             throw new RuntimeException("Error reading tuple",e);
@@ -71,12 +80,12 @@ public class LinesReader extends BaseRichSpout {
     }
 
     @Override
-    public void ack(Object msgId) {
-        System.out.println("OK:" + msgId);
+    public void ack(Object msgID) {
+        System.out.println("OK:" + msgID);
     }
     @Override
-    public void fail(Object msgId) {
-        System.out.println("FAIL:" + msgId);
+    public void fail(Object msgID) {
+        System.out.println("FAIL:" + msgID);
     }
 
 }

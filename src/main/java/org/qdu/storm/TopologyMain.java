@@ -22,31 +22,30 @@ public class TopologyMain {
 
         //设置topo
         //数据源
-        builder.setSpout("sourcedata",new LinesReader()).setNumTasks(2);
+        builder.setSpout("sourcedata",new LinesReader());
         //切分
-        builder.setBolt("split",new Split(),2).shuffleGrouping("sourcedata")
-                                                .setNumTasks(4);
+        builder.setBolt("split",new Split()).shuffleGrouping("sourcedata");
+
         //转化ip到long
-        builder.setBolt("iptolong",new ipToLong(),2).shuffleGrouping("split")
-                                                                    .setNumTasks(4);
+        builder.setBolt("iptolong",new ipToLong()).shuffleGrouping("split");
         //ip转城市
-        builder.setBolt("addrtocity",new AddrToCity(),2).shuffleGrouping("iptolong")
-        .setNumTasks(2);
+        builder.setBolt("addrtocity",new AddrToCity()).shuffleGrouping("iptolong");
 
         //builder.setBolt("trim",new TrimSuffix()).shuffleGrouping("addrtocity");
 
         //城市转坐标
-        builder.setBolt("getxy",new CityToCoordinate(),2).shuffleGrouping("addrtocity")
-                                                                            .setNumTasks(2);
+        builder.setBolt("getxy",new CityToCoordinate()).shuffleGrouping("addrtocity");
 
         //坐标估值
-        builder.setBolt("eva",new eval()).shuffleGrouping("getxy");
+        builder.setBolt("eva",new eval()).shuffleGrouping("getxy",CityToCoordinate.Stream_ID_1);
+
+        //没有映射的城市
+        builder.setBolt("unbindcity",new GetInvalidCity()).shuffleGrouping("getxy",CityToCoordinate.Stream_ID_2);
 
         //坐标持久化
-        builder.setBolt("database",new jdbcConnector(),4).shuffleGrouping("eva")
-        .setNumTasks(4);
+        builder.setBolt("database",new jdbcConnector()).shuffleGrouping("eva");
         //打印测试
-        //builder.setBolt("print",new TestOfPrint()).shuffleGrouping("database");
+        builder.setBolt("print",new TestOfPrint()).shuffleGrouping("database");
 
         //设置发射数据源和映射文件
         Config config = new Config();
@@ -58,13 +57,13 @@ public class TopologyMain {
         config.put("username","stormproject");
         config.put("password","storm");
         config.setDebug(true);
-        config.setNumWorkers(2);
+        //config.setNumWorkers(2);
 
         //本地模式调试
-        //LocalCluster cluster = new LocalCluster();
-        //cluster.submitTopology(toponame,config,builder.createTopology());
+        LocalCluster cluster = new LocalCluster();
+        cluster.submitTopology(toponame,config,builder.createTopology());
 
         //集群模式
-        StormSubmitter.submitTopology(toponame,config, builder.createTopology());
+        //StormSubmitter.submitTopology(toponame,config, builder.createTopology());
     }
 }

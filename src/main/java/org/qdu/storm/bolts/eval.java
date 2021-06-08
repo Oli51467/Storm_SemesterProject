@@ -28,7 +28,8 @@ public class eval extends BaseRichBolt {
         lng = tuple.getDoubleByField("longitude");
         lat = tuple.getDoubleByField("latitude");
         value = check(city);
-        collector.emit(new Values(lng,lat,city,value));
+        collector.emit(tuple,new Values(lng,lat,city,value));
+        collector.ack(tuple);
     }
 
     int check(String city){

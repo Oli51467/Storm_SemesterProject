@@ -27,6 +27,7 @@ public class TestOfPrint extends BaseRichBolt {
         res = tuple.getStringByField("flag");
 
         System.out.println("是否成功插入数据库:   "+res);
+        this.collector.ack(tuple);
     }
 
     @Override
