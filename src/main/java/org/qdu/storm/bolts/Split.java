@@ -18,6 +18,8 @@ public class Split extends BaseRichBolt {
     OutputCollector collector;
     String lines;
     String fields[];
+
+
     String ipconf;
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
@@ -26,13 +28,13 @@ public class Split extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        lines = tuple.getStringByField("line");
+        System.out.println(tuple.getStringByField("value"));
+        lines = tuple.getStringByField("value");
         fields = lines.split("\t");
         ipconf = fields[3].trim();
         collector.emit(tuple,new Values(ipconf));
         collector.ack(tuple);
     }
-
 
     @Override
     public void declareOutputFields(OutputFieldsDeclarer outputFieldsDeclarer) {

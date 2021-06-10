@@ -38,6 +38,29 @@
             <artifactId>libthrift</artifactId>
             <version>0.9.3</version>
         </dependency>
+
+        <!--引入kafka-clients-->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${storm.version}</version>
+        </dependency>
+
+        <!--引入kafka-->
+        <!-- https://mvnrepository.com/artifact/org.apache.kafka/kafka -->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.12</artifactId>
+            <version>2.2.0</version>
+        </dependency>
+
+        <!--引入Storm的kafka-->
+        <dependency>
+            <groupId>org.apache.storm</groupId>
+            <artifactId>storm-kafka-client</artifactId>
+            <version>${storm.version}</version>
+        </dependency>
+
     </dependencies>
 
     <packaging>jar</packaging>
