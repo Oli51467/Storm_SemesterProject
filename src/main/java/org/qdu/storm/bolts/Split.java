@@ -26,9 +26,12 @@ public class Split extends BaseRichBolt {
         this.collector=outputCollector;
     }
 
+    /*
+        从kafkaspout(ApplogsProducer)中获取
+     */
     @Override
     public void execute(Tuple tuple) {
-        System.out.println(tuple.getStringByField("value"));
+        //System.out.println(tuple.getStringByField("value"));
         lines = tuple.getStringByField("value");
         fields = lines.split("\t");
         ipconf = fields[3].trim();

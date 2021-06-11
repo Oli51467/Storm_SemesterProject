@@ -6,7 +6,7 @@ import org.apache.storm.kafka.spout.KafkaSpoutConfig;
 
 
 public class KafkaConfig {
-    public KafkaSpoutConfig KafkaSetting(){
+    public KafkaSpoutConfig KafkaSetting(String topic){
         KafkaSpoutConfig.Builder<String, String> kafkaSpoutConfigBuilder;
         //kafka连接信息
         String bootstrapServers = "hadoop-master:9092";
@@ -17,7 +17,7 @@ public class KafkaConfig {
 
         // 方式二：
         // KafkaConsumerProducerDemo和NewKafKaTopo可以同时运行，一个用于发射数据，一个用于接受数据
-        String topic = "test";
+        //String topic = "test";
         /**
          * 构造kafkaSpoutConfigBuilder构造器
          *

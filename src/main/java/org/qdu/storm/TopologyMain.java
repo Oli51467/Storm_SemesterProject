@@ -6,11 +6,8 @@ import org.apache.storm.StormSubmitter;
 import org.apache.storm.kafka.spout.KafkaSpout;
 import org.apache.storm.kafka.spout.KafkaSpoutConfig;
 import org.apache.storm.topology.TopologyBuilder;
-import org.apache.storm.trident.state.StateType;
 import org.qdu.kafka.newstyle.KafkaConfig;
 import org.qdu.storm.bolts.*;
-import org.qdu.storm.jdbcUtils.JDBCStateConfig;
-import org.qdu.storm.spouts.LinesReader;
 
 public class TopologyMain {
     public static void main(String[] args) throws Exception {
@@ -25,16 +22,19 @@ public class TopologyMain {
 
         //配置kafka
         KafkaConfig kafkasetting = new KafkaConfig();
-        KafkaSpoutConfig kafkaspoutconfig= kafkasetting.KafkaSetting();
+        KafkaSpoutConfig applog = kafkasetting.KafkaSetting("test");
 
-        //设置topo
+        //设置topology
+
         //数据源
-        builder.setSpout("sourcedata",new KafkaSpout(kafkaspoutconfig));
+        builder.setSpout("sourcedata",new KafkaSpout(applog));
+
         //切分
         builder.setBolt("split",new Split()).shuffleGrouping("sourcedata");
 
-        //转化ip到long
+        //转化ip成为一个Long型
         builder.setBolt("iptolong",new ipToLong()).shuffleGrouping("split");
+
         //ip转城市
         builder.setBolt("addrtocity",new AddrToCity()).shuffleGrouping("iptolong");
 

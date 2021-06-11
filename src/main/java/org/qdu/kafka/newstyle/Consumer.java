@@ -20,7 +20,7 @@ public class Consumer {
         p.put(ConsumerConfig.GROUP_ID_CONFIG, topic);
 
         KafkaConsumer<String, String> kafkaConsumer = new KafkaConsumer<String, String>(p);
-        kafkaConsumer.subscribe(Collections.singletonList(Producer.topic));// 订阅消息
+        kafkaConsumer.subscribe(Collections.singletonList(ApplogsProducer.topic));// 订阅消息
 
         while (true) {
             ConsumerRecords<String, String> records = kafkaConsumer.poll(100);

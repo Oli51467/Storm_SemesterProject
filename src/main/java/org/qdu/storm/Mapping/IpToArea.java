@@ -1,11 +1,18 @@
 package org.qdu.storm.Mapping;
 
 import javafx.util.Pair;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
+
 import java.io.*;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.*;
 
 /*
-    从文件中读取，将IP与地区的映射存入哈希表中
+    从HDFS中读取，将IP与地区的映射存入哈希表中
     以提高bolts中信息转化的速度
     其中，IP是最小IP和最大IP的范围
  */
@@ -13,23 +20,22 @@ public class IpToArea {
 
     //hash
     public HashMap<Pair<Long,Long>,String> region = new HashMap<>();
-    public int idx=0;
+
+    //一些从HDFS读数据的流
+    FSDataInputStream fsr = null;
+    BufferedReader bufferedReader = null;
+    String lines = null;
+    String fields[];
+    Long Minip,Maxip;
+    int idx=0;
 
     public IpToArea() {
-        FileReader fileReader = null;
         try {
-            fileReader = new FileReader("D:/Storm/ip_area_isp.txt");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException("Error reading file");
-        }
+            FileSystem fs = FileSystem.get(new URI("hdfs://hadoop-master:9000"),new Configuration());
+            fsr = fs.open(new Path("/data/ip_area_isp.txt"));
+            bufferedReader = new BufferedReader(new InputStreamReader(fsr));
 
-        BufferedReader reader = new BufferedReader(fileReader);
-
-        String lines;
-        String []fields;
-        Long Minip,Maxip;
-        try{
-            while((lines = reader.readLine()) != null){
+            while((lines = bufferedReader.readLine()) != null){
                 fields = lines.split("\t");
 
                 //剪掉不在中国的ip地址
@@ -43,13 +49,20 @@ public class IpToArea {
                 if(check(fields[2])) continue;
                 else {
                     region.put(r,fields[2]);
+                    idx++;
                 }
-
-                idx++;
             }
+        } catch (IOException | URISyntaxException e) {
+            e.printStackTrace();
         }
-        catch (Exception e) {
-            throw new RuntimeException("Error reading tuple", e);
+        finally {
+            if (bufferedReader != null) {
+                try {
+                    bufferedReader.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 

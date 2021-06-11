@@ -18,7 +18,7 @@ public class GetInvalidCity extends BaseRichBolt {
     OutputCollector collector;
     JDBCStateConfig jdbconfig;
     JDBCUtil jdbcUtil;
-    private String tablename="InvalidCity";
+    final private String tablename="InvalidCity";
 
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
