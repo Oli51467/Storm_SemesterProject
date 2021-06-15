@@ -3,10 +3,11 @@ package org.qdu.storm;
 import org.apache.storm.Config;
 import org.apache.storm.LocalCluster;
 import org.apache.storm.StormSubmitter;
+
 import org.apache.storm.kafka.spout.KafkaSpout;
 import org.apache.storm.kafka.spout.KafkaSpoutConfig;
 import org.apache.storm.topology.TopologyBuilder;
-import org.qdu.kafka.newstyle.KafkaConfig;
+import org.qdu.kafka.KafkaConfig;
 import org.qdu.storm.bolts.*;
 
 public class TopologyMain {
@@ -22,7 +23,7 @@ public class TopologyMain {
 
         //配置kafka
         KafkaConfig kafkasetting = new KafkaConfig();
-        KafkaSpoutConfig applog = kafkasetting.KafkaSetting("test");
+        KafkaSpoutConfig applog = kafkasetting.KafkaSetting("test1");
 
         //设置topology
 
@@ -56,8 +57,6 @@ public class TopologyMain {
 
         //设置发射数据源和映射文件
         Config config = new Config();
-        config.put("logfile","D:/Storm/app.log");
-        config.put("refile","D:/Storm/ip_area_isp.txt");
         config.put("driver","com.mysql.jdbc.Driver");
         config.put("table","Location");
         config.put("url","jdbc:mysql://hadoop-master:3306/stormproject");

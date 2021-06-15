@@ -1,9 +1,10 @@
-package org.qdu.kafka.newstyle;
+package org.qdu.kafka;
 
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.storm.kafka.spout.KafkaSpoutConfig;
-
+import org.apache.storm.kafka.spout.KafkaSpout;
+import org.apache.storm.kafka.spout.KafkaSpoutConfig;
 
 public class KafkaConfig {
     public KafkaSpoutConfig KafkaSetting(String topic){
@@ -13,7 +14,7 @@ public class KafkaConfig {
         //主题，首先需要保证kafka的队列中，下面的代码都已经执行过
         // kafka-topics.sh --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
         // 程序启动以后，需要使用下属的脚本向Kafka队列发送数据
-        // kafka-console-producer.sh --bootstrap-server bd-alone:9092 --topic test
+        // kafka-console-producer.sh --bootstrap-server hadoop-master:9092 --topic test
 
         // 方式二：
         // KafkaConsumerProducerDemo和NewKafKaTopo可以同时运行，一个用于发射数据，一个用于接受数据
@@ -26,6 +27,8 @@ public class KafkaConfig {
          * StringDeserializer:  value Deserializer  主题的value的反序列化
          * topic: 主题名称
          */
+
+        //这里报错Caused by: java.lang.ClassNotFoundException: org.apache.storm.kafka.spout.KafkaSpoutConfig$Builder
         kafkaSpoutConfigBuilder = new KafkaSpoutConfig.Builder(
                 bootstrapServers,
                 topic);
