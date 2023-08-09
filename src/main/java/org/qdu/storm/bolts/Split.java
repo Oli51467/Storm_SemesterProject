@@ -15,27 +15,23 @@ import java.util.Map;
  */
 public class Split extends BaseRichBolt {
 
-    OutputCollector collector;
-    String lines;
-    String fields[];
+    private OutputCollector collector;
 
-
-    String ipconf;
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
-        this.collector=outputCollector;
+        this.collector = outputCollector;
     }
 
     /*
-        从kafkaspout(ApplogsProducer)中获取
+        从kafkaSpout(AppLogsProducer)中获取
      */
     @Override
     public void execute(Tuple tuple) {
         //System.out.println(tuple.getStringByField("value"));
-        lines = tuple.getStringByField("value");
-        fields = lines.split("\t");
-        ipconf = fields[3].trim();
-        collector.emit(tuple,new Values(ipconf));
+        String lines = tuple.getStringByField("value");
+        String[] fields = lines.split("\t");
+        String ipConf = fields[3].trim();
+        collector.emit(tuple, new Values(ipConf));
         collector.ack(tuple);
     }
 

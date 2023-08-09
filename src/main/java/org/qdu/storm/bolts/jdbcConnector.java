@@ -10,6 +10,7 @@ import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.qdu.storm.jdbcUtils.JDBCStateConfig;
 import org.qdu.storm.jdbcUtils.JDBCUtil;
+
 import java.util.Map;
 
 /*
@@ -18,15 +19,12 @@ import java.util.Map;
  */
 public class jdbcConnector extends BaseRichBolt {
 
-    OutputCollector collector;
-    double longti;
-    double lati;
-    JDBCStateConfig jdbconfig;
-    JDBCUtil jdbcUtil;
-    String tablename;
+    private OutputCollector collector;
+    private JDBCStateConfig jdbcConfig;
+    private JDBCUtil jdbcUtil;
 
     //定义插入到数据库中的相关字段的值，name默认为地区
-    int value =10;
+    int value = 10;
     String name1 = "地区";
     String city1;
 
@@ -42,36 +40,36 @@ public class jdbcConnector extends BaseRichBolt {
     @Override
     public void execute(Tuple tuple) {
         //取字段
-        longti = tuple.getDoubleByField("lng");
-        lati = tuple.getDoubleByField("lat");
+        double longitude = tuple.getDoubleByField("lng");
+        double latitude = tuple.getDoubleByField("lat");
         city1 = tuple.getStringByField("CITY");
         value = tuple.getIntegerByField("value");
 
         //获取要持久化的表名
-        tablename = jdbconfig.getTable();
+        String tableName = jdbcConfig.getTable();
         //prepare一条sql语句
-        String sql = "insert into " + tablename +" (name,city,value,lng,lat) values('"+name1+"','"+city1+"',"+value+","+longti+","+lati+");";
+        String sql = "insert into " + tableName + " (name,city,value,lng,lat) values('" + name1 + "','" + city1 + "'," + value + "," + longitude + "," + latitude + ");";
         //插入到数据库中
         jdbcUtil.insert(sql);
-        collector.emit(tuple,new Values("success"));
+        collector.emit(tuple, new Values("success"));
         collector.ack(tuple);
     }
 
-    void setting(Map<String,Object> conf){
-        jdbconfig = new JDBCStateConfig();
+    void setting(Map<String, Object> conf) {
+        jdbcConfig = new JDBCStateConfig();
         //容错性
-        jdbconfig.setType(StateType.TRANSACTIONAL);
+        jdbcConfig.setType(StateType.TRANSACTIONAL);
         //设置mysql相关配置信息
-        jdbconfig.setDriver(conf.get("driver").toString());
-        jdbconfig.setTable(conf.get("table").toString());
-        jdbconfig.setUrl(conf.get("url").toString());
-        jdbconfig.setUsername(conf.get("username").toString());
-        jdbconfig.setPassword(conf.get("password").toString());
+        jdbcConfig.setDriver(conf.get("driver").toString());
+        jdbcConfig.setTable(conf.get("table").toString());
+        jdbcConfig.setUrl(conf.get("url").toString());
+        jdbcConfig.setUsername(conf.get("username").toString());
+        jdbcConfig.setPassword(conf.get("password").toString());
         //将设置好的配置信息传入到JDBCUtil中
-        jdbcUtil = new JDBCUtil(jdbconfig.getDriver(),
-                jdbconfig.getUrl(),
-                jdbconfig.getUsername(),
-                jdbconfig.getPassword());
+        jdbcUtil = new JDBCUtil(jdbcConfig.getDriver(),
+                jdbcConfig.getUrl(),
+                jdbcConfig.getUsername(),
+                jdbcConfig.getPassword());
         jdbcUtil.init();
     }
 

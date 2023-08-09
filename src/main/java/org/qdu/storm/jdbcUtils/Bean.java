@@ -26,6 +26,7 @@ public class Bean {
     public void setLatitude(double latitude) {
         this.latitude = latitude;
     }
+
     @Override
     public String toString() {
         return "Bean[" +
@@ -33,5 +34,4 @@ public class Bean {
                 ", latitude=" + latitude +
                 ']';
     }
-    public Bean() {}
 }

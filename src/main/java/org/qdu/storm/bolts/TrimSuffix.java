@@ -37,8 +37,7 @@ public class TrimSuffix extends BaseRichBolt {
 
     boolean check(String str){
         char c = str.charAt(str.length()-1);
-        if(c == '市' || c == '区' || c == '州' || c == '县' ) return true;
-        else return false;
+        return c == '市' || c == '区' || c == '州' || c == '县';
     }
 
     @Override

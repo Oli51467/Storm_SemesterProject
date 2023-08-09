@@ -19,10 +19,8 @@ public class JDBCState<T> implements IBackingMap<T> {
     @Override
     public List<T> multiGet(List<List<Object>> keys) {
         //
-        StringBuilder sqlBuilder = new StringBuilder("SELECT ").append(config.getCols())
-                .append("," + config.getColVals())
-                .append(",txid")
-                .append(" FROM " + config.getTable())
+        StringBuilder sqlBuilder = new StringBuilder("SELECT ").append(config.getCols()).append(",").append(config.getColVals())
+                .append(",txid").append(" FROM ").append(config.getTable())
                 .append(" WHERE ")
                 .append(config.getCols())
                 .append("='");

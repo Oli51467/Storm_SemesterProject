@@ -30,11 +30,11 @@ public class BoltStatistics {
                         System.out.println("*************************************");
 
                         System.out.println("Component ID of Bolt " + componentId);
-                        System.out.println("Transferred: " + getAllTimeStat(executorStats.get_transferred(), ALL_TIME));
-                        System.out.println("Emitted:" +getAllTimeStat(executorStats.get_emitted(), ALL_TIME));
+                        System.out.println("Transferred: " + getAllTimeStat(executorStats.get_transferred()));
+                        System.out.println("Emitted:" + getAllTimeStat(executorStats.get_emitted()));
                         System.out.println("Acked: " + getBoltStats(boltStats.get_acked(), ALL_TIME));
                         System.out.println("Failed: " + getBoltStats(boltStats.get_failed(), ALL_TIME));
-                        System.out.println("Executed: " +getBoltStats(boltStats.get_executed(), ALL_TIME));
+                        System.out.println("Executed: " + getBoltStats(boltStats.get_executed(), ALL_TIME));
                         System.out.println("*************************************");
                     }
                 }
@@ -45,10 +45,10 @@ public class BoltStatistics {
         }
     }
 
-    private static Long getAllTimeStat(Map<String, Map<String, Long>> map, String statName) {
-        if (map != null && map.size()>0) {
-            Long statValue = null;
-            Map<String, Long> tempMap = map.get(statName);
+    private static Long getAllTimeStat(Map<String, Map<String, Long>> map) {
+        if (map != null && map.size() > 0) {
+            Long statValue;
+            Map<String, Long> tempMap = map.get(BoltStatistics.ALL_TIME);
             statValue = tempMap.get(DEFAULT);
             return statValue;
         }
@@ -56,7 +56,7 @@ public class BoltStatistics {
     }
 
     public static Long getBoltStats(Map<String, Map<GlobalStreamId, Long>> map, String statName) {
-        if (map != null && map.size()>0) {
+        if (map != null && map.size() > 0) {
             Long statValue = null;
             Map<GlobalStreamId, Long> tempMap = map.get(statName);
             Set<GlobalStreamId> key = tempMap.keySet();

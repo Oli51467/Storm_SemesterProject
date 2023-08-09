@@ -7,8 +7,8 @@ import org.apache.storm.thrift.transport.TSocket;
 
 /**
  * 代表一个Thrift Client的信息
- * @author jb-xingchencheng
  *
+ * @author jb-xingchencheng
  */
 public class ClientInfo {
     private TSocket tsocket;

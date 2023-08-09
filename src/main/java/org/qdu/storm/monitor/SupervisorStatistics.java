@@ -27,7 +27,7 @@ public class SupervisorStatistics {
                 System.out.println("*************************************");
             }
         } catch (Exception e) {
-            throw new RuntimeException("Error occurred while getting cluster info : ");
+            throw new RuntimeException("Error occurred while getting cluster info: " + e.getMessage());
         }
     }
 

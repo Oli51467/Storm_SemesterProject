@@ -8,11 +8,8 @@ import org.apache.storm.thrift.transport.TSocket;
 import org.apache.storm.thrift.transport.TTransport;
 import org.apache.thrift.transport.TTransportException;
 
-
 /**
  * Thrift Client管理类
- * @author jb-xingchencheng
- *
  */
 public class ClientManager {
     public static ClientInfo getClient(String nimbusHost, int nimbusPort) throws TTransportException, org.apache.storm.thrift.transport.TTransportException {

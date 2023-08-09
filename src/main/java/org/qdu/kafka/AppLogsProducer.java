@@ -15,7 +15,7 @@ import java.net.URI;
 import java.util.Properties;
 
 
-public class ApplogsProducer {
+public class AppLogsProducer {
     public static String topic = "test1";//定义主题
 
     public static void main(String[] args) {
@@ -25,34 +25,33 @@ public class ApplogsProducer {
         p.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
 
         //Thread.currentThread().setContextClassLoader(null);
-        KafkaProducer<String,String> kafkaProducer = new KafkaProducer<>(p);
+        KafkaProducer<String, String> kafkaProducer = new KafkaProducer<>(p);
 
-        int id=0;
+        int id = 0;
         FSDataInputStream fsr;
         BufferedReader bufferedReader;
         String lines;
 
         try {
             while (true) {
-                try{
-                    FileSystem fs = FileSystem.get(new URI("hdfs://hadoop-master:9000"),new Configuration());
+                try {
+                    FileSystem fs = FileSystem.get(new URI("hdfs://hadoop-master:9000"), new Configuration());
                     fsr = fs.open(new Path("/data/app.log"));
                     bufferedReader = new BufferedReader(new InputStreamReader(fsr));
 
-                    while((lines = bufferedReader.readLine())!=null){
-                        ProducerRecord<String,String> record = new ProducerRecord<>(topic,lines);
+                    while ((lines = bufferedReader.readLine()) != null) {
+                        ProducerRecord<String, String> record = new ProducerRecord<>(topic, lines);
                         kafkaProducer.send(record);
-                        System.out.println("消息成功发送了吧..."+id++);
+                        System.out.println("消息成功发送" + id++);
                         Thread.sleep(100);
                     }
-                }catch(Exception e){
-                    throw new RuntimeException("Error reading tuple",e);
+                } catch (Exception e) {
+                    throw new RuntimeException("Error reading tuple", e);
                 }
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             kafkaProducer.close();
         }
     }

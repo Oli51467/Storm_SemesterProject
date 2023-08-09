@@ -14,19 +14,18 @@ import java.util.Map;
 public class TestOfPrint extends BaseRichBolt {
 
     OutputCollector collector;
-    double longti,lati;
     String res;
 
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
-        this.collector=outputCollector;
+        this.collector = outputCollector;
     }
 
     @Override
     public void execute(Tuple tuple) {
         res = tuple.getStringByField("flag");
 
-        System.out.println("是否成功插入数据库:   "+res);
+        System.out.println("是否成功插入数据库:   " + res);
         this.collector.ack(tuple);
     }
 

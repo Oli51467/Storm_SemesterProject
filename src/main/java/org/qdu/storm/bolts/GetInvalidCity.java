@@ -10,15 +10,15 @@ import org.qdu.storm.jdbcUtils.JDBCStateConfig;
 import org.qdu.storm.jdbcUtils.JDBCUtil;
 
 import java.util.Map;
+
 /*
 将无法映射成坐标的城市保存到数据库中
  */
 public class GetInvalidCity extends BaseRichBolt {
 
     OutputCollector collector;
-    JDBCStateConfig jdbconfig;
+    JDBCStateConfig jdbcConfig;
     JDBCUtil jdbcUtil;
-    final private String tablename="InvalidCity";
 
     @Override
     public void prepare(Map<String, Object> map, TopologyContext topologyContext, OutputCollector outputCollector) {
@@ -28,27 +28,28 @@ public class GetInvalidCity extends BaseRichBolt {
 
     @Override
     public void execute(Tuple tuple) {
-        String unbindc = tuple.getStringByField("unbind");
-        String sql = "insert into " + tablename +" (city) values('"+unbindc+"');";
+        String unbind = tuple.getStringByField("unbind");
+        String tableName = "InvalidCity";
+        String sql = "insert into " + tableName + " (city) values('" + unbind + "');";
         jdbcUtil.insert(sql);
         collector.ack(tuple);
     }
 
-    void setting(Map<String,Object> conf){
-        jdbconfig = new JDBCStateConfig();
+    void setting(Map<String, Object> conf) {
+        jdbcConfig = new JDBCStateConfig();
         //容错性
-        jdbconfig.setType(StateType.TRANSACTIONAL);
+        jdbcConfig.setType(StateType.TRANSACTIONAL);
         //设置mysql相关配置信息
-        jdbconfig.setDriver(conf.get("driver").toString());
-        jdbconfig.setTable(conf.get("table").toString());
-        jdbconfig.setUrl(conf.get("url").toString());
-        jdbconfig.setUsername(conf.get("username").toString());
-        jdbconfig.setPassword(conf.get("password").toString());
+        jdbcConfig.setDriver(conf.get("driver").toString());
+        jdbcConfig.setTable(conf.get("table").toString());
+        jdbcConfig.setUrl(conf.get("url").toString());
+        jdbcConfig.setUsername(conf.get("username").toString());
+        jdbcConfig.setPassword(conf.get("password").toString());
         //将设置好的配置信息传入到JDBCUtil中
-        jdbcUtil = new JDBCUtil(jdbconfig.getDriver(),
-                jdbconfig.getUrl(),
-                jdbconfig.getUsername(),
-                jdbconfig.getPassword());
+        jdbcUtil = new JDBCUtil(jdbcConfig.getDriver(),
+                jdbcConfig.getUrl(),
+                jdbcConfig.getUsername(),
+                jdbcConfig.getPassword());
         jdbcUtil.init();
     }
 

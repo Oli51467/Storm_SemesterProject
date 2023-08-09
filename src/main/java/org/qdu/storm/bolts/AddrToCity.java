@@ -9,11 +9,13 @@ import org.apache.storm.tuple.Fields;
 import org.apache.storm.tuple.Tuple;
 import org.apache.storm.tuple.Values;
 import org.qdu.storm.Mapping.IpToArea;
+
 import java.util.Map;
+import java.util.Objects;
 
 /*
     将从上一个bolt接收的ip地址转化成地区
-    通过Toarea获取哈希表
+    通过ToArea获取哈希表
  */
 public class AddrToCity extends BaseRichBolt {
 
@@ -36,16 +38,16 @@ public class AddrToCity extends BaseRichBolt {
         //查表
         city = Get(addr);
         //如果有映射，就发射到下一个bolt中
-        if(city != ""){
-            collector.emit(tuple,new Values(city));
+        if (!Objects.equals(city, "")) {
+            collector.emit(tuple, new Values(city));
             collector.ack(tuple);
         }
 
     }
 
-    String Get(Long ar){
-        for (Map.Entry<Pair<Long,Long>,String> entry : ToArea.region.entrySet()) {
-            if(ar >= entry.getKey().getKey() && ar <= entry.getKey().getValue()){
+    String Get(Long ar) {
+        for (Map.Entry<Pair<Long, Long>, String> entry : ToArea.region.entrySet()) {
+            if (ar >= entry.getKey().getKey() && ar <= entry.getKey().getValue()) {
                 return entry.getValue();
             }
         }

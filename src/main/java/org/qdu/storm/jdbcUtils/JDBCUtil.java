@@ -16,8 +16,6 @@ public class JDBCUtil {
     private String password;
     private Connection connection;
     private PreparedStatement ps;
-    private ResultSet rs;
-
 
     public JDBCUtil(String driver, String url, String username, String password) {
         this.driver = driver;
@@ -27,7 +25,7 @@ public class JDBCUtil {
         init();
     }
 
-    public void init(){
+    public void init() {
         try {
             Class.forName(driver);
         } catch (ClassNotFoundException e) {
@@ -51,7 +49,7 @@ public class JDBCUtil {
                 e.printStackTrace();
             }
         }
-        if (state>0) {
+        if (state > 0) {
             return true;
         }
         return false;
@@ -62,9 +60,9 @@ public class JDBCUtil {
         try {
             connection = DriverManager.getConnection(url, username, password);
             ps = connection.prepareStatement(sql);
-            rs = ps.executeQuery();
-            if(rs.next()){
-                Bean iteBean=new Bean(rs.getDouble("longitude"), rs.getDouble("latitude"));
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                Bean iteBean = new Bean(rs.getDouble("longitude"), rs.getDouble("latitude"));
                 //*****要改
                 // result.put(rs.getString("tel"), iteBean);
             }

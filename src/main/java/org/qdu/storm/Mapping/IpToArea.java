@@ -18,44 +18,42 @@ import java.util.*;
  */
 public class IpToArea {
 
-    //hash
-    public HashMap<Pair<Long,Long>,String> region = new HashMap<>();
+    // hash
+    public HashMap<Pair<Long, Long>, String> region = new HashMap<>();
 
-    //一些从HDFS读数据的流
+    // 一些从HDFS读数据的流
     FSDataInputStream fsr = null;
     BufferedReader bufferedReader = null;
     String lines = null;
-    String fields[];
-    Long Minip,Maxip;
-    int idx=0;
+    String[] fields;
+    Long MinIp, maxIp;
+    int idx = 0;
 
     public IpToArea() {
         try {
-            FileSystem fs = FileSystem.get(new URI("hdfs://hadoop-master:9000"),new Configuration());
+            FileSystem fs = FileSystem.get(new URI("hdfs://hadoop-master:9000"), new Configuration());
             fsr = fs.open(new Path("/data/ip_area_isp.txt"));
             bufferedReader = new BufferedReader(new InputStreamReader(fsr));
 
-            while((lines = bufferedReader.readLine()) != null){
+            while ((lines = bufferedReader.readLine()) != null) {
                 fields = lines.split("\t");
 
                 //剪掉不在中国的ip地址
-                if(!fields[0].contains("中国")) continue;
+                if (!fields[0].contains("中国")) continue;
 
                 //最大ip和最小ip
-                Minip = Long.parseLong(fields[4]);
-                Maxip = Long.parseLong(fields[5]);
-                Pair<Long,Long> r = new Pair<>(Minip,Maxip);
+                MinIp = Long.parseLong(fields[4]);
+                maxIp = Long.parseLong(fields[5]);
+                Pair<Long, Long> r = new Pair<>(MinIp, maxIp);
 
-                if(check(fields[2])) continue;
-                else {
-                    region.put(r,fields[2]);
+                if (!check(fields[2])) {
+                    region.put(r, fields[2]);
                     idx++;
                 }
             }
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             if (bufferedReader != null) {
                 try {
                     bufferedReader.close();
@@ -67,9 +65,8 @@ public class IpToArea {
     }
 
     //如果地区的最小范围字段不包含如下四个后缀，则说明这个字段无效
-    public boolean check(String fields){
-        if(!fields.contains("市") && !fields.contains("区") && !fields.contains("州") && !fields.contains("县")) return true;
-        else return false;
+    public boolean check(String fields) {
+        return !fields.contains("市") && !fields.contains("区") && !fields.contains("州") && !fields.contains("县");
     }
 
     //测试

@@ -29,10 +29,10 @@ public class SpoutStatistics {
                         SpoutStats spoutStats = executorSpecificStats.get_spout();
                         System.out.println("*************************************");
                         System.out.println("Component ID of Spout:- " + componentId);
-                        System.out.println("Transferred:- " + getAllTimeStat(executorStats.get_transferred(), ALL_TIME));
-                        System.out.println("Total tuples emitted:- " + getAllTimeStat(executorStats.get_emitted(), ALL_TIME));
-                        System.out.println("Acked: " + getAllTimeStat(spoutStats.get_acked(), ALL_TIME));
-                        System.out.println("Failed: " + getAllTimeStat(spoutStats.get_failed(), ALL_TIME));
+                        System.out.println("Transferred:- " + getAllTimeStat(executorStats.get_transferred()));
+                        System.out.println("Total tuples emitted:- " + getAllTimeStat(executorStats.get_emitted()));
+                        System.out.println("Acked: " + getAllTimeStat(spoutStats.get_acked()));
+                        System.out.println("Failed: " + getAllTimeStat(spoutStats.get_failed()));
                         System.out.println("*************************************");
                     }
                 }
@@ -42,10 +42,10 @@ public class SpoutStatistics {
         }
     }
 
-    private static Long getAllTimeStat(Map<String, Map<String, Long>> map, String statName) {
-        if (map != null && map.size()>0) {
-            Long statValue = null;
-            Map<String, Long> tempMap = map.get(statName);
+    private static Long getAllTimeStat(Map<String, Map<String, Long>> map) {
+        if (map != null && map.size() > 0) {
+            Long statValue;
+            Map<String, Long> tempMap = map.get(SpoutStatistics.ALL_TIME);
             statValue = tempMap.get(DEFAULT);
 
             return statValue;

@@ -10,7 +10,6 @@ import java.io.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
-import java.util.Map;
 
 /*
     从HDFS中读取，将地区与坐标的映射存入哈希表中
@@ -19,23 +18,23 @@ import java.util.Map;
 public class AreaToCoordinate {
 
     //hash
-    public HashMap<String, Pair<Double,Double>> coordinate = new HashMap<>();
+    public HashMap<String, Pair<Double, Double>> coordinate = new HashMap<>();
     //一些从HDFS读数据的流
     FSDataInputStream fsr = null;
     BufferedReader bufferedReader = null;
     String lines;
-    String []fields;
+    String[] fields;
     String region;
-    double longitude,latitude;
-    int idx=0;
+    double longitude, latitude;
+    int idx = 0;
 
-    public AreaToCoordinate(){
+    public AreaToCoordinate() {
         try {
-            FileSystem fs = FileSystem.get(new URI("hdfs://hadoop-master:9000"),new Configuration());
+            FileSystem fs = FileSystem.get(new URI("hdfs://hadoop-master:9000"), new Configuration());
             fsr = fs.open(new Path("/data/lng-lat-mapping.txt"));
             bufferedReader = new BufferedReader(new InputStreamReader(fsr));
 
-            while((lines = bufferedReader.readLine()) !=null){
+            while ((lines = bufferedReader.readLine()) != null) {
                 //文件以逗号分隔
                 fields = lines.split(",");
 
@@ -45,14 +44,13 @@ public class AreaToCoordinate {
                 region = fields[1];
 
                 //存入hash表
-                Pair<Double,Double> p = new Pair<>(longitude,latitude);
-                coordinate.put(region,p);
+                Pair<Double, Double> p = new Pair<>(longitude, latitude);
+                coordinate.put(region, p);
                 idx++;
             }
         } catch (IOException | URISyntaxException e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             if (bufferedReader != null) {
                 try {
                     bufferedReader.close();

@@ -11,7 +11,6 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.Map;
-import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /*
@@ -34,10 +33,10 @@ public class LinesReader extends BaseRichSpout {
         try {
             this.fileReader = new FileReader(conf.get("logfile").toString());
         } catch (FileNotFoundException e) {
-            throw new RuntimeException("Error reading file ["+conf.get("logfile")+"]");
+            throw new RuntimeException("Error reading file [" + conf.get("logfile") + "]");
         }
         //初始化发射器
-        this.collector=spoutOutputCollector;
+        this.collector = spoutOutputCollector;
         //初始化
         counter = new AtomicInteger();
 
@@ -47,13 +46,12 @@ public class LinesReader extends BaseRichSpout {
     public void nextTuple() {
 
         //如果一次发射成功，则sleep一秒
-        if(completed){
+        if (completed) {
             try {
                 Thread.sleep(1000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
-            }
-            finally {
+            } finally {
                 completed = false;
             }
             return;
@@ -61,15 +59,15 @@ public class LinesReader extends BaseRichSpout {
         String line;
         //Open the reader
         BufferedReader reader = new BufferedReader(fileReader);
-        try{
+        try {
             //读取每一行
-            while((line = reader.readLine()) != null){
+            while ((line = reader.readLine()) != null) {
                 msgID = this.counter.getAndIncrement();
-                this.collector.emit(new Values(line),msgID);
+                this.collector.emit(new Values(line), msgID);
             }
-        }catch(Exception e){
-            throw new RuntimeException("Error reading tuple",e);
-        }finally{
+        } catch (Exception e) {
+            throw new RuntimeException("Error reading tuple", e);
+        } finally {
             completed = true;
         }
     }
@@ -83,6 +81,7 @@ public class LinesReader extends BaseRichSpout {
     public void ack(Object msgID) {
         System.out.println("OK:" + msgID);
     }
+
     @Override
     public void fail(Object msgID) {
         System.out.println("FAIL:" + msgID);

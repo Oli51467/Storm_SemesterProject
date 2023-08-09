@@ -14,7 +14,7 @@ public class TopologyStatistics {
             Nimbus.Client client = thriftClient.getClient();
             // Get the cluster info
             ClusterSummary clusterSummary = client.getClusterInfo();
-            // Get the interator over TopologySummary class
+            // Get the iterator over TopologySummary class
             Iterator<TopologySummary> topologiesIterator =
                     clusterSummary.get_topologies_iterator();
             while (topologiesIterator.hasNext()) {
